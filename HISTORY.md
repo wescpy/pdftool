@@ -1,6 +1,6 @@
 # History of creating this code with Cursor
 
-## Original prompt: create web app
+## ORIGINAL PROMPT: create web app
 Create a simple PDF editor named "PDFtool" as a modern web app built using Vue.js. The app should have two features that users can choose from: 1) merge multiple PDF files together into a single file, and 2) delete one or more pages from a single PDF file. These features are presented as a list for users to choose from and also prepares for new features to be added. The user interface (UI) should have modern fonts and good contrast for human viewing, and the overall UI should be pleasant and visually-appealing.
 
 For the merge feature, users have access to a file selector dialog to choose multiple PDF files from their filesystem. There is also has a text field for users to enter the filename for the merged PDF file.
@@ -54,3 +54,5 @@ Update the top-level README to include images of the application running. The ap
 Uploading the images with that prompt didn't have any effect... it didn't seem to notice my uploads. I copied the files directly into the top-level folder then requested the `README` be updated and all 3 files (including the images) be committed to GitHub.
 
 I followed up by manually editing `HISTORY.md` with these last few steps, and this is what you're looking at now. Bigger steps to take next are to get this thing running on GCP Cloud Run and testing the CLI.
+
+Some of the files did have issues in the editor. I attempted to fix them which led to other problems and got stuck on Tailwind v3 vs. v4 incompatibilities. The solution was to roll back to v3 for now. The next steps described just above still stand.
