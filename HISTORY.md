@@ -9,7 +9,7 @@ The delete feature has a file selector for users to select the file they wish to
 
 The backend should be a short Python Flask and FastAPI app that can use the pypdf library directly or call the pdfly command-line tool (CLI) to execute user requests. Evaluate both options and implement the one that would be easiest to maintain for a human software developer and requires the least amount of code.
 
-All source code for both frontend and backend should be separate and created in the directory ~/work/cursor/pdftool.
+All source code for both frontend and backend should be separate and created in the directory `~/work/cursor/pdftool`.
 
 
 ### Results
@@ -55,4 +55,15 @@ Uploading the images with that prompt didn't have any effect... it didn't seem t
 
 I followed up by manually editing `HISTORY.md` with these last few steps, and this is what you're looking at now. Bigger steps to take next are to get this thing running on GCP Cloud Run and testing the CLI.
 
-Some of the files did have issues in the editor. I attempted to fix them which led to other problems and got stuck on Tailwind v3 vs. v4 incompatibilities. The solution was to roll back to v3 for now. The next steps described just above still stand.
+Some of the files did have issues in the editor. I attempted to fix them which led to other problems and got stuck on Tailwind v3 vs. v4 incompatibilities. The solution was to roll back to v3 for now. Before getting to the next steps, I asked it to review all the `README` files because I didn't like the `frontend` one, which sounded like a generic template.
+
+
+## NEXT PROMPT: cleanup the `README`s
+Scan all of the README files at the top-level, frontend, and backend to ensure they're descriptive of the respective content and improve them if possible.
+
+### Results
+After looking over the `README` files, it suggested these changes (which I accepted and updated in the repo):
+
+- Add a summary and “Demo” section to the top-level README.
+- Replace the frontend README with a project-specific one.
+- Add a “Quick Start” to the backend README.
