@@ -1,5 +1,11 @@
 # PDF Tool
 
+![PDF Tool Startup](app-startup.png)
+*App startup: what you see when you first open the app*
+
+![PDF Tool Running](app-running.png)
+*App running: after selecting PDF files for merging and deleting pages*
+
 A comprehensive PDF manipulation application with multiple interfaces: web-based frontend, REST API backend, and command-line interface.
 
 ## 🚀 Features
