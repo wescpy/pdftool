@@ -1,5 +1,9 @@
 # PDF Tool
 
+PDF Tool is an all-in-one application for manipulating PDF files. It provides a modern web interface, a REST API, and a command-line tool for merging, splitting, and managing PDF documents with ease.
+
+## Demo
+
 ![PDF Tool Startup](app-startup.png)
 *App startup: what you see when you first open the app*
 
@@ -228,4 +232,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **PyPDF2** for PDF manipulation capabilities
 - **FastAPI** for the excellent web framework
 - **React** and **Vite** for the modern frontend experience
-- **Tailwind CSS** for the beautiful UI components 
+- **Tailwind CSS** for the beautiful UI components
+
+## 🆘 Support
+
+For questions, issues, or feature requests, please open an issue on the [GitHub repository](https://github.com/wescpy/pdftool/issues) or contact the maintainer. 

@@ -1,5 +1,13 @@
 # PDF Tool - Backend API
 
+## Quick Start
+
+```bash
+cd backend
+pip install -r requirements.txt
+python main.py
+```
+
 A FastAPI-based backend service for PDF manipulation operations including merging multiple PDFs and deleting pages from PDFs.
 
 ## Features
@@ -227,6 +235,14 @@ The backend includes comprehensive error handling:
    ```
 
 ## Testing
+
+If you have tests implemented, run:
+
+```bash
+python -m pytest
+```
+
+If not, consider adding tests for your endpoints and PDF processing logic.
 
 ### Manual Testing
 
