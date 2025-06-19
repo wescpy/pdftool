@@ -1,0 +1,36 @@
+# History of creating this code with Cursor
+
+## Original prompt: create web app
+Create a simple PDF editor named "PDFtool" as a modern web app built using Vue.js. The app should have two features that users can choose from: 1) merge multiple PDF files together into a single file, and 2) delete one or more pages from a single PDF file. These features are presented as a list for users to choose from and also prepares for new features to be added. The user interface (UI) should have modern fonts and good contrast for human viewing, and the overall UI should be pleasant and visually-appealing.
+
+For the merge feature, users have access to a file selector dialog to choose multiple PDF files from their filesystem. There is also has a text field for users to enter the filename for the merged PDF file.
+
+The delete feature has a file selector for users to select the file they wish to edit. Once a file is selected, the app shows users all pages in the file and allows users to select the pages they want to delete. This can be a single or multiple pages. For multiple pages, users will have checkboxes for each page in the document. They should have the ability to drag-and-drop a group of pages to auto-select and check.
+
+The backend should be a short Python Flask and FastAPI app that can use the pypdf library directly or call the pdfly command-line tool (CLI) to execute user requests. Evaluate both options and implement the one that would be easiest to maintain for a human software developer and requires the least amount of code.
+
+All source code for both frontend and backend should be separate and created in the directory ~/work/cursor/pdftool.
+
+
+### Intermediate steps
+The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders.
+
+
+## NEXT PROMPT: design to run on GCP (Cloud Run)
+Both the merge PDFs and delete pages features work! Now containerize the application so I can deploy both services to Google Cloud Run Functions.
+
+
+### Intermediate steps
+Cursor asked me whether it should create `Dockerfile`s & `.dockerignore` files for both the frontend and backend. I said yes, and also create a `cloudbuild.yaml` file too.
+
+It did create both, but the 2nd `.dockerfile` ignore ran into an infinite loop adding the same set of lines. I had to tell Cursor to stop, remove the file if it exists, and to try again. It did so successfully the 2nd time then moved onto the `cloudbuild.yaml` file.
+
+I have **not** tested whether it works, meaning I haven't deployed it to Cloud Run yet.
+
+
+## NEXT PROMPT: create a CLI equivalent
+In a subfolder named "cli", convert this app to a single command-line Python script with the same features, prompting users to provide names of PDF files for merging or a single PDF filename to delete pages from.
+
+
+### Intermediate steps
+I haven't tested the CLI either but wanted to check everything in for posterity first before any more file altering takes place.
