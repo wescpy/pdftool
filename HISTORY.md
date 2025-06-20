@@ -13,7 +13,7 @@ All source code for both frontend and backend should be separate and created in 
 
 
 ### Results
-The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders.
+The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders. The biggest issue I encountered is that Cursor just could not generate a Vue app that worked, so I had to switch to React.
 
 
 ## NEXT PROMPT: design to run on GCP (Cloud Run)
@@ -67,3 +67,13 @@ After looking over the `README` files, it suggested these changes (which I accep
 - Add a summary and “Demo” section to the top-level README.
 - Replace the frontend README with a project-specific one.
 - Add a “Quick Start” to the backend README.
+
+
+### Additional follow-up: CLI
+The next day I decided to try the CLI. While the merge feature worked out-of-the-box, the delete feature had a bug where it could not complete the request. As a seasoned Python developer, it didn't take long to find the issue. But would it be challenging for Cursor? Not really. My prompt was: 
+
+> There's a problem with the CLI. When running the CLI to delete pages from a PDF, I get this error: `❌ Error: Error deleting pages: seek of closed file`.
+
+As the error indicates, the code is trying to access the file after it has been closed, making you realize that a huge chunk of code should be inside the `with` block. Cursor came to the same conclusion (and made the fix):
+
+> I found the issue! The problem is in the `delete_pages` method. The file is being closed after reading the PDF, but then the code tries to access `pdf.pages[i]` later, which causes the "seek of closed file" error.
