@@ -13,7 +13,9 @@
 
 
 ### Results
-The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders. The biggest issue I encountered is that Cursor just could not generate a Vue app that worked, so I had to switch to React.
+The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders. There were two big issues overall:
+1. Cursor just could not generate a Vue app that worked, so I had to switch to React.
+1. There were some major Tailwind v3 vs. v4 compatibility issues as well as with the PostCSS plugin. Cursor tried very hard to use v4 but in the end had to revert back to v3.
 
 
 ## NEXT PROMPT: design to run on GCP (Cloud Run)
@@ -61,12 +63,17 @@ Some of the files did have issues in the editor. I attempted to fix them which l
 ## NEXT PROMPT: cleanup the `README`s
 > Scan all of the README files at the top-level, frontend, and backend to ensure they're descriptive of the respective content and improve them if possible.
 
+
 ### Results
-After looking over the `README` files, it suggested these changes (which I accepted and updated in the repo):
+After looking over the `README` files, it came up with:
+
+_Here’s an analysis and improvement plan for your README files:_
 
 - Add a summary and “Demo” section to the top-level README.
 - Replace the frontend README with a project-specific one.
 - Add a “Quick Start” to the backend README.
+
+I accepted the changes and had Cursor push the latest upstream.
 
 
 ### Additional follow-up: CLI
@@ -79,7 +86,7 @@ As the error indicates, the code is trying to access the file after it has been 
 > I found the issue! The problem is in the `delete_pages` method. The file is being closed after reading the PDF, but then the code tries to access `pdf.pages[i]` later, which causes the "seek of closed file" error.
 
 
-## NEXT PROMPT: cleanup the `README`s
+## NEXT PROMPT: change cloud deployments to return merged or modified PDF via HTTP instead of saving locally
 > Taking a look at deploying the web app being to Google Cloud Run, some functionality needs to be changed to make it work successfully. When running both servers locally, it's not an issue to save the merged or modified PDFs to the local filesystem, but in the cloud, this is not the desired behavior because users want the merged or modified file returned to them and not stored on Google servers. Alter both the frontend and backend so that if running locally, the files are saved locally as they are now, but if deployed to Cloud Run, for the resulting file to be returned to the user via the HTTP response.
 
 ### Results
@@ -96,11 +103,14 @@ _This is a great and common requirement for cloud deployments! Here’s a concis
 **Backend logic:**
 - If `CLOUD_RUN` is set, return the PDF as a streaming response.
 - If not, save to disk as before.
+
 2. **Frontend**
 - **Current:** Downloads the file from the backend response.
 - **Change needed:** None, if the backend returns the file as a download (with correct headers), the frontend can handle it as before.
+
 3. **CLI**
 - No change needed unless you want to support cloud mode for CLI as well.
+
 4. **Implementation Plan**
 **Backend (FastAPI)**
 - Add a check for `os.environ.get("CLOUD_RUN") == "true"`.
@@ -109,4 +119,12 @@ _This is a great and common requirement for cloud deployments! Here’s a concis
 **Frontend**
 - No change needed if you already handle file downloads from the response.
 
-This plan seemed reasonable, so I gave the okay for implementation. The next step would be to deploy this app to GCP.
+This plan seemed reasonable, so I gave the okay for implementation and committed the code. However, upon reflection looking at the changes, it appears that the app was already returning a `StreamingResponse`, and my request made Cursor deliberately add explicit saving of the resulting to the local filesystem needlessly.
+
+Because my browser immediately saved the file, I made the mistake of assuming _the app wrote the PDF to the local filesystem, not the browser_. I realized the error of my ways and asked Cursor to revert this change, in both the code as well as the cloud `DEPLOYMENT.md` file:
+
+> Actually upon reflection, the original was already streaming the response and not saving locally as there's no need for the local versions to explicitly save the resulting PDF. Please revert the change adding that feature, and also remove the need for the CLOUD_RUN environment variable so a StreamingResponse is sent back in all cases. Basically revert the code back to the previous version.
+
+_The backend code has been reverted to always return a `StreamingResponse` for merged and modified PDFs, regardless of environment. The logic for saving files locally and the `CLOUD_RUN` environment variable has been removed. The deployment documentation has also been updated to remove references to the environment variable._
+
+I had Cursor revert the update and committed the changes. The next step would be to deploy this app to GCP.

@@ -31,7 +31,6 @@ async def merge_pdfs(files: List[UploadFile] = File(...)):
         raise HTTPException(status_code=400, detail="At least 2 PDF files are required")
     merger = PdfWriter()
     try:
-        filenames = []
         for file in files:
             if not file.filename.lower().endswith('.pdf'):
                 raise HTTPException(status_code=400, detail=f"File {file.filename} is not a PDF")
@@ -39,23 +38,14 @@ async def merge_pdfs(files: List[UploadFile] = File(...)):
             pdf = PdfReader(io.BytesIO(content))
             for page in pdf.pages:
                 merger.add_page(page)
-            filenames.append(file.filename)
         output = io.BytesIO()
         merger.write(output)
         output.seek(0)
-        if os.environ.get("CLOUD_RUN", "false").lower() == "true":
-            # Cloud Run: return as HTTP response
-            return StreamingResponse(
-                output,
-                media_type="application/pdf",
-                headers={"Content-Disposition": "attachment; filename=merged.pdf"}
-            )
-        else:
-            # Local: save to disk
-            out_path = os.path.join(TEMP_DIR, "merged.pdf")
-            with open(out_path, "wb") as f:
-                f.write(output.getbuffer())
-            return {"message": f"Merged PDF saved as {out_path}", "output_file": out_path}
+        return StreamingResponse(
+            output,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "attachment; filename=merged.pdf"}
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -83,19 +73,11 @@ async def delete_pages(file: UploadFile = File(...), pages: str = Form(...)):
         output = io.BytesIO()
         writer.write(output)
         output.seek(0)
-        if os.environ.get("CLOUD_RUN", "false").lower() == "true":
-            # Cloud Run: return as HTTP response
-            return StreamingResponse(
-                output,
-                media_type="application/pdf",
-                headers={"Content-Disposition": "attachment; filename=modified.pdf"}
-            )
-        else:
-            # Local: save to disk
-            out_path = os.path.join(TEMP_DIR, "modified.pdf")
-            with open(out_path, "wb") as f:
-                f.write(output.getbuffer())
-            return {"message": f"Modified PDF saved as {out_path}", "output_file": out_path}
+        return StreamingResponse(
+            output,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "attachment; filename=modified.pdf"}
+        )
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid page range format")
     except Exception as e:
