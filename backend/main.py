@@ -29,29 +29,33 @@ if not os.path.exists(TEMP_DIR):
 async def merge_pdfs(files: List[UploadFile] = File(...)):
     if len(files) < 2:
         raise HTTPException(status_code=400, detail="At least 2 PDF files are required")
-    
     merger = PdfWriter()
-    
     try:
+        filenames = []
         for file in files:
             if not file.filename.lower().endswith('.pdf'):
                 raise HTTPException(status_code=400, detail=f"File {file.filename} is not a PDF")
-            
             content = await file.read()
             pdf = PdfReader(io.BytesIO(content))
-            
             for page in pdf.pages:
                 merger.add_page(page)
-        
+            filenames.append(file.filename)
         output = io.BytesIO()
         merger.write(output)
         output.seek(0)
-        
-        return StreamingResponse(
-            output,
-            media_type="application/pdf",
-            headers={"Content-Disposition": "attachment; filename=merged.pdf"}
-        )
+        if os.environ.get("CLOUD_RUN", "false").lower() == "true":
+            # Cloud Run: return as HTTP response
+            return StreamingResponse(
+                output,
+                media_type="application/pdf",
+                headers={"Content-Disposition": "attachment; filename=merged.pdf"}
+            )
+        else:
+            # Local: save to disk
+            out_path = os.path.join(TEMP_DIR, "merged.pdf")
+            with open(out_path, "wb") as f:
+                f.write(output.getbuffer())
+            return {"message": f"Merged PDF saved as {out_path}", "output_file": out_path}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -59,39 +63,39 @@ async def merge_pdfs(files: List[UploadFile] = File(...)):
 async def delete_pages(file: UploadFile = File(...), pages: str = Form(...)):
     if not file.filename.lower().endswith('.pdf'):
         raise HTTPException(status_code=400, detail="File must be a PDF")
-    
     if not pages:
         raise HTTPException(status_code=400, detail="Pages parameter is required")
-    
     try:
-        # Parse page ranges (e.g., "1,3-5,7")
         page_numbers = set()
         for part in pages.split(','):
-            part = part.strip()  # Remove whitespace
+            part = part.strip()
             if '-' in part:
                 start, end = map(int, part.split('-'))
                 page_numbers.update(range(start, end + 1))
             else:
                 page_numbers.add(int(part))
-        
         content = await file.read()
         pdf = PdfReader(io.BytesIO(content))
         writer = PdfWriter()
-        
-        # Add all pages except those in page_numbers
         for i in range(len(pdf.pages)):
-            if i + 1 not in page_numbers:  # +1 because pages are 1-indexed
+            if i + 1 not in page_numbers:
                 writer.add_page(pdf.pages[i])
-        
         output = io.BytesIO()
         writer.write(output)
         output.seek(0)
-        
-        return StreamingResponse(
-            output,
-            media_type="application/pdf",
-            headers={"Content-Disposition": "attachment; filename=modified.pdf"}
-        )
+        if os.environ.get("CLOUD_RUN", "false").lower() == "true":
+            # Cloud Run: return as HTTP response
+            return StreamingResponse(
+                output,
+                media_type="application/pdf",
+                headers={"Content-Disposition": "attachment; filename=modified.pdf"}
+            )
+        else:
+            # Local: save to disk
+            out_path = os.path.join(TEMP_DIR, "modified.pdf")
+            with open(out_path, "wb") as f:
+                f.write(output.getbuffer())
+            return {"message": f"Modified PDF saved as {out_path}", "output_file": out_path}
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid page range format")
     except Exception as e:
@@ -101,11 +105,9 @@ async def delete_pages(file: UploadFile = File(...), pages: str = Form(...)):
 async def get_page_count(filename: str):
     if not filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="File is not a PDF")
-    
     file_path = os.path.join(TEMP_DIR, filename)
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="File not found")
-    
     reader = PdfReader(file_path)
     return {"page_count": len(reader.pages)}
 

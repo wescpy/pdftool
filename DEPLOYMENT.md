@@ -132,6 +132,18 @@ gcloud run services update pdftool-backend \
   --set-env-vars "ENVIRONMENT=production"
 ```
 
+## Cloud Run Environment Variables
+
+When deploying the backend to Google Cloud Run, set the following environment variable to ensure that merged or modified PDF files are returned directly to the user and not saved to disk:
+
+```bash
+gcloud run services update pdftool-backend \
+  --region us-central1 \
+  --set-env-vars "CLOUD_RUN=true"
+```
+
+This will make the backend return the resulting PDF file in the HTTP response for `/merge` and `/delete-pages` endpoints, rather than saving it to the server's filesystem.
+
 ## Accessing Your Application
 
 After deployment, you can access your services:
