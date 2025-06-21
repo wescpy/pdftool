@@ -217,3 +217,31 @@ Cursor then explained 5173 is for local while the `ENVIRONMENT` envvar is either
 > I don't understand how the Docker frontend is able to start on port 80 and the Docker backend is able to accept requests without a CORS issue because the backend is only expecting localhost:5173 for local frontends and Cloud Run URLs for cloud deployment. Does that take into consideration Docker deployments?
 
 Then it finally realized there was a CORS issue with Docker deployments and proceeded to add ports 3000 (React) and 80 (Docker frontend), and created `127.0.0.1` aliases for `localhost` in the backend `main.py`. It also updated the affected `README` files (top-level and backend) to reflect this change.
+
+
+## NEXT PROMPT: error with Docker frontend
+While the Docker backend container built and started correctly, that wasn't the case with the frontend, which errored out, so I asked Cursor to fix:
+
+> Starting the backend locally using Docker works, but the frontend gives me the following error... please diagnose:
+```
+. . .
+ > [build 4/6] RUN npm ci --only=production:
+0.725 npm error code EUSAGE
+0.725 npm error
+0.725 npm error The `npm ci` command can only install with an existing package-lock.json or
+0.725 npm error npm-shrinkwrap.json with lockfileVersion >= 1. Run an install with npm@5 or
+0.725 npm error later to generate a package-lock.json file, then try again.
+0.725 npm error
+. . .
+ERROR: failed to solve: process "/bin/sh -c npm ci --only=production" did not complete successfully: exit code: 1
+. . .
+```
+
+### Results
+First, Cursor claimed _there's no package-lock.json file in the frontend directory, and npm ci requires it._ But it still fails after running `npm install`. It's "thinking" perhaps `package-lock.json` was being filtered out in `.dockerignore`. Nope, that wasn't the case either. It finally concluded _the .dockerignore file is excluding dist/ and build/ directories, but more importantly, it's not excluding `package-lock.json`._
+
+That led to what is apparently the root cause, and that is _the Dockerfile is using npm ci --only=production, but for a build process, we need the dev dependencies as well (like Vite, TypeScript, etc.). The --only=production flag excludes dev dependencies that are needed for the build step._
+
+Then it ran into difficulties "caused" by me, not having Docker installed (and definitely not having its daemon running). After installing and re-running the commands, it ran into another issue: _`@testing-library/react@14.3.1` expects React 18, but we have React 19,_ so it had to update `Dockerfile` to use `--legacy-peer-deps`.
+
+Next stumbling block: the _`package.json_` and _`package-lock.json_` are out of sync_, meaning there are dependencies in `package.json` but not `package-lock.json`. Furthermore, the React 18 vs. 19 required something different: `npm install --legacy-peer-deps`. After that, the container built successfully.

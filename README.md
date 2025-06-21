@@ -122,11 +122,15 @@ docker build -t pdftool-backend ./backend
 docker run -p 8000:8000 pdftool-backend
 
 # Build and run frontend (production build)
-docker build -t pdftool-frontend ./frontend
+cd frontend
+npm install --legacy-peer-deps  # Resolve React version conflicts
+docker build -t pdftool-frontend .
 docker run -p 80:80 pdftool-frontend
 ```
 
 **Note**: The frontend Docker container serves the production build (nginx on port 80), not the development server. For local development, use `npm run dev` instead of Docker.
+
+**Dependency Resolution**: The frontend build uses `--legacy-peer-deps` to resolve React 19 compatibility with testing libraries.
 
 **CORS Configuration**: The backend automatically allows requests from both local development (port 5173) and Docker deployments (port 80), as well as Cloud Run services.
 
@@ -228,17 +232,24 @@ This project is licensed under the Apache License, Version 2.0 - see the [LICENS
    ```bash
    cd frontend
    rm -rf node_modules package-lock.json
-   npm install
+   npm install --legacy-peer-deps  # Resolve React version conflicts
    ```
 
-3. **Backend dependency issues:**
+3. **Docker build failures:**
+   ```bash
+   cd frontend
+   npm install --legacy-peer-deps  # Update dependencies first
+   docker build -t pdftool-frontend .
+   ```
+
+4. **Backend dependency issues:**
    ```bash
    cd backend
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-4. **PDF processing errors:**
+5. **PDF processing errors:**
    - Ensure files are valid PDFs
    - Check file permissions
    - Verify file size limits

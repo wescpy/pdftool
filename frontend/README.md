@@ -45,6 +45,17 @@ npm run build
 - Serve the `dist` directory with any static server
 - The built files are optimized for production deployment
 
+### Docker Deployment
+```bash
+# Build the Docker image
+docker build -t pdftool-frontend .
+
+# Run the container
+docker run -p 80:80 pdftool-frontend
+```
+
+**Note**: The Docker build uses `--legacy-peer-deps` to resolve React version conflicts between React 19 and testing libraries. The container serves the production build via nginx on port 80.
+
 ## Technologies Used
 - React 18
 - Vite
