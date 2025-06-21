@@ -10,6 +10,42 @@ The PDF Tool project includes comprehensive test suites for all three components
 - **Frontend (React)**: Component tests using React Testing Library and Vitest
 - **CLI (Python)**: Unit tests for command-line functionality
 
+### Details
+
+**Backend Tests (`backend/tests/`)**:
+- `test_main.py`: Comprehensive FastAPI endpoint tests covering PDF merging, page deletion, page count retrieval, error handling, and CORS configuration
+- `conftest.py`: Pytest fixtures and configuration for test setup and cleanup
+- `requirements-test.txt`: Test dependencies (pytest, pytest-asyncio, httpx, fastapi, PyPDF2)
+- `run_tests.py`: Test runner script for the backend
+
+**Frontend Tests (`frontend/tests/`)**:
+- `MergePDF.test.tsx`: React component tests for PDF merging functionality
+- `DeletePages.test.tsx`: React component tests for page deletion functionality
+- `setup.ts`: Test environment configuration with mocks
+- `vitest.config.ts`: Vitest configuration for React testing
+- Updated `package.json`: Added testing dependencies (Vitest, React Testing Library, jsdom)
+
+**CLI Tests (`cli/tests/`)**:
+- `test_pdf_tool.py`: Comprehensive CLI functionality tests covering PDFTool class methods, interactive functions, error handling, and input validation
+- `requirements-test.txt`: Test dependencies (pytest, PyPDF2)
+- `run_tests.py`: Test runner script for the CLI
+
+**Project-Wide Testing Infrastructure**:
+- `TESTING.md`: Comprehensive testing documentation with setup instructions, CI/CD examples, and best practices
+- `run_all_tests.py`: Master test runner that executes all test suites across the project
+- Updated `README.md`: Added testing section with instructions
+
+The test suites cover:
+- **API endpoints** (merge, delete-pages, page-count)
+- **Component rendering** and user interactions
+- **Error handling** and edge cases
+- **File validation** and processing
+- **CORS configuration** and cross-origin requests
+- **Interactive CLI functions** with mocked user input
+
+All tests are designed to be CI/CD ready with proper mocking, fixtures, and cleanup. The master test runner provides a single command to execute all test suites and generate a comprehensive report.
+
+
 ## Test Structure
 
 ```
