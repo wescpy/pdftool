@@ -52,7 +52,7 @@ pdftool/
    ```
 
 3. **Open your browser:**
-   - Frontend: http://localhost:5173
+   - Frontend: http://localhost:5173 (Vite's default port)
    - Backend API: http://localhost:8000
 
 ### Option 2: Command Line Interface
@@ -84,6 +84,7 @@ Then use the API endpoints directly:
 - **Styling:** Tailwind CSS for modern UI
 - **File Upload:** react-dropzone for drag-and-drop
 - **HTTP Client:** Axios for API communication
+- **Port Configuration:** Vite's default port (5173) for local development, Cloud Run handles port assignment automatically
 
 ### Backend (FastAPI + Python)
 - **Framework:** FastAPI for high-performance API
@@ -91,6 +92,7 @@ Then use the API endpoints directly:
 - **Server:** Uvicorn ASGI server
 - **CORS:** Configured for frontend integration
 - **Error Handling:** Comprehensive error responses
+- **File Handling:** Streaming responses for PDF downloads
 
 ### CLI (Python)
 - **Interface:** Command-line with interactive menu
@@ -101,7 +103,7 @@ Then use the API endpoints directly:
 ## 🚀 Deployment
 
 ### Local Development
-- Frontend: `npm run dev` (port 5173)
+- Frontend: `npm run dev` (Vite's default port)
 - Backend: `python main.py` (port 8000)
 
 ### Docker Deployment
@@ -116,7 +118,7 @@ docker run -p 80:80 pdftool-frontend
 ```
 
 ### Google Cloud Run
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions. Cloud Run automatically handles port assignment and routing.
 
 ## 📚 Documentation
 

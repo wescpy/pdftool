@@ -106,6 +106,20 @@ gcloud run deploy pdftool-frontend \
 
 ## Configuration
 
+### Environment Variables
+
+#### Backend Environment Variables
+You can set environment variables for the backend service:
+
+```bash
+gcloud run services update pdftool-backend \
+  --region us-central1 \
+  --set-env-vars "ENVIRONMENT=production"
+```
+
+#### Frontend Configuration
+The frontend requires no special environment variables for Cloud Run deployment. The container runtime automatically handles port assignment and routing.
+
 ### Update Frontend API URL
 
 After deployment, you'll need to update the frontend to use the deployed backend URL:
@@ -122,15 +136,14 @@ After deployment, you'll need to update the frontend to use the deployed backend
 
 3. Rebuild and redeploy the frontend
 
-### Environment Variables
+### Port Configuration Summary
 
-You can set environment variables for the backend service:
+| Component | Local Development | Cloud Run |
+|-----------|------------------|-----------|
+| Frontend  | Vite's default port (5173) | Auto-assigned by Cloud Run |
+| Backend   | Port 8000 | Auto-assigned by Cloud Run |
 
-```bash
-gcloud run services update pdftool-backend \
-  --region us-central1 \
-  --set-env-vars "ENVIRONMENT=production"
-```
+**Note**: Cloud Run automatically handles port assignment and routing, so no explicit port configuration is needed. Vite uses port 5173 by default for local development.
 
 ## Accessing Your Application
 
