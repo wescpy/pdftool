@@ -177,3 +177,16 @@ The rest of the code in my repo uses the Apache 2.0 license, but Cursor defaulte
 ### Results
 1. Cursor changed the license, created a LICENSE file, and updated all the `README` files to point to it.
 1. It also created `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` files as I requested.
+
+
+## NEXT PROMPT: add unit tests
+> Please develop a suite of unit tests for the frontend, backend, and CLI in each folder in an approrpiately-named subfolder specifically for tests. Create the test suites in preparation for a future CI/CD pipeline for cloud deployment.
+
+### Results
+Of the three (front, backend, CLI) software components, Cursor starts with the backend, followed by the CLI, and finally does the frontend last. After the code, it creates the test configuration and 3rd-party package files, and after that, the test runner scripts and a `TESTING.md` testing guide.
+
+One issue that cropped up during the creation of all the test code is that there were a ton of linter errors, requiring me to give it cleanup instructions:
+
+> Before I accept each new or modified file, can you fix any issues in the files, including linter errors or warnings?
+
+This is where the LLM used for the free version slows down significantly. I can see it taking about 2-3 seconds per line of code rather than 2-3 lines of code generated per second. I actually walked AfK for a few minutes to grab some food while it was working.

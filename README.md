@@ -156,14 +156,26 @@ pip install -r requirements.txt
 
 ### Running Tests
 ```bash
-# Backend tests (when implemented)
-cd backend
-python -m pytest
+# Run all tests across the project
+python run_all_tests.py
 
-# Frontend tests (when implemented)
+# Backend tests
+cd backend
+pip install -r requirements-test.txt
+python -m pytest tests/ -v
+
+# Frontend tests
 cd frontend
-npm test
+npm install
+npm run test:run
+
+# CLI tests
+cd cli
+pip install -r requirements-test.txt
+python -m pytest tests/ -v
 ```
+
+For detailed testing information, see [TESTING.md](TESTING.md).
 
 ## 🤝 Contributing
 
