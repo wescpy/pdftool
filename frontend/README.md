@@ -85,4 +85,4 @@ VITE_BACKEND_URL=https://your-backend-service-url.com npm run build
 - If the port is already in use, Vite will automatically try the next available port
 
 ## License
-MIT
+Apache License, Version 2.0 - see the [LICENSE](../LICENSE) file for details.

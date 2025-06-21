@@ -158,3 +158,22 @@ I was taking a look at the backend `main.py` and saw a bunch of extra allowed or
 
 ### Results
 Cursor left 5173 as an allowed origin, removed the extras (5174-5177), and added Cloud Run origins for cloud deployments. I won't add it here but also asked Cursor to make any adjustments to the `README` files as well as `DEPLOYMENT.md` to reflect the changes.
+
+
+## NEXT PROMPT: create a tag and a pre-release
+I now have a stable working web app that can be deployed locally as well as a working CLI. This calls for a release:
+> This is a basic working version for local deployments as well as the CLI, so I'd like to tag it as v0.1.0. What are the commands I need to issue to git to make this happen, so that it'll be reflected in GitHub? Let's also make a release using this tag? And how do I mark this tag and release as pre-production?
+
+### Results
+Tag v0.1.0 was created (click on "🏷️1 tags" in GitHub to see it), and a pre-production release was also created. Since it's _only_ a pre-release, you have to click on "[Releases](/releases)" to see it.
+
+
+## NEXT PROMPT: change licenses
+The rest of the code in my repo uses the Apache 2.0 license, but Cursor defaulted to MIT, so I asked Cursor to switch:
+> I'd like to change this repo to having the Apache 2.0 license instead of the MIT license. Can you also create a LICENSE file to reflect this update? Add hyperlinks (and not just that text) for the LICENSE file to the README files that reference LICENSE. Also create a CONTRIBUTING.md that adheres to the Contributor Covenant Code of Conduct referenced at contributor-covenant.org and create a corresponding CODE_OF_CONDUCT.md file.
+
+(I cheated a little... the "one" prompt you see above was actually split into two, but I took no additional actions, and the results are the same as if I gave the single prompt.)
+
+### Results
+1. Cursor changed the license, created a LICENSE file, and updated all the `README` files to point to it.
+1. It also created `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` files as I requested.
