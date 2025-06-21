@@ -25,7 +25,17 @@ npm run dev
 - The app uses Vite's default port for local development
 
 ### Cloud Deployment
-When deployed to Cloud Run, the container runtime automatically handles port assignment and routing. No additional configuration is needed.
+For cloud deployments, the frontend automatically detects the environment and constructs the backend URL:
+
+1. **Automatic Detection**: The app detects if it's running on localhost vs. a cloud domain
+2. **Backend URL Construction**: In Cloud Run, it constructs the backend URL by replacing `pdftool-frontend` with `pdftool-backend` in the service URL
+3. **Environment Variable Override**: You can override the backend URL by setting the `VITE_BACKEND_URL` environment variable during the build
+
+#### Setting Custom Backend URL (Optional)
+If you need to use a different backend URL, set the environment variable during build:
+```bash
+VITE_BACKEND_URL=https://your-backend-service-url.com npm run build
+```
 
 ### Build for Production
 ```bash
@@ -43,13 +53,31 @@ npm run build
 - TypeScript
 
 ## Connecting to the Backend
-- The frontend expects the backend API at http://localhost:8000 by default
-- For cloud deployments, update the API URL in the components to point to your deployed backend
-- You can change the API URL in the code if needed
+
+### Local Development
+- The frontend automatically connects to `http://localhost:8000` for local development
+- No additional configuration needed
+
+### Cloud Deployment
+For cloud deployments, the frontend automatically detects the environment and constructs the backend URL:
+
+1. **Automatic Detection**: The app detects if it's running on localhost vs. a cloud domain
+2. **Backend URL Construction**: In Cloud Run, it constructs the backend URL by replacing `pdftool-frontend` with `pdftool-backend` in the service URL
+3. **Environment Variable Override**: You can override the backend URL by setting the `VITE_BACKEND_URL` environment variable during the build
+
+#### Setting Custom Backend URL (Optional)
+If you need to use a different backend URL, set the environment variable during build:
+```bash
+VITE_BACKEND_URL=https://your-backend-service-url.com npm run build
+```
+
+### Troubleshooting Backend Connection
+- If you see network errors, make sure the backend is running and accessible
+- For Cloud Run deployments, ensure both frontend and backend services are deployed
+- Check that the backend service name follows the pattern `pdftool-backend` (or set VITE_BACKEND_URL)
 
 ## Troubleshooting
 - If styles are missing, ensure Tailwind CSS is installed and configured as in this repo
-- If you see network errors, make sure the backend is running and accessible
 - If the port is already in use, Vite will automatically try the next available port
 
 ## License

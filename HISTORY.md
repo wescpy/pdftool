@@ -128,3 +128,23 @@ Because my browser immediately saved the file, I made the mistake of assuming _t
 _The backend code has been reverted to always return a `StreamingResponse` for merged and modified PDFs, regardless of environment. The logic for saving files locally and the `CLOUD_RUN` environment variable has been removed. The deployment documentation has also been updated to remove references to the environment variable._
 
 I had Cursor revert the update and committed the changes. The next step would be to deploy this app to GCP.
+
+## NEXT PROMPT: change cloud deployments to return merged or modified PDF via HTTP instead of saving locally
+Before doing the cloud deployment, I wanted to ensure the app can be accessed on the standard port 80, so I made this request:
+
+> I'd like to modify a few things for the frontend:
+> 1. Instead of hardcoding the server to run on the default Vite port 5173, configure the app so that it starts on 5173 for local deployments but on port 80 for Google Cloud Run deployments. Make necessary updates to the frontend README and top-level DEPLOYMENT.md
+> 2. In index.html, change the default Vite page title to "PDFtool: a basic PDF manipulation app"
+> 3. Delete the public/vite.svg file using "git rm" instead of just deleting locally, and also remove the corresponding line in index.html. I'll add a favicon.ico file which React will use as a default instead. 
+
+### Results
+Cursor generally complied but felt it needed to import Node.js types when it get a linter error trying to access `process.env.PORT`. I thought it could be handled by adding `import process from 'node:process'`, but I guess not because it has to be done using "Vite's built-in port detection"(?). I'm new to Vite & React vs. pure Node CLIs, so what do I know?
+
+I let Cursor run `npm install --save-dev @types/node --prefix frontend`, and no import of `process` was required in the code after that. (We'll see.) After _this_ change, the frontend service starts locally on Vite's default port 5173, and cloud deployments will set `PORT=80` and access the Cloud Run frontend service URL directly. I did not try the app to ensure these changes worked because there was something else on the backend that needed to be updated first.
+
+
+## NEXT PROMPT: change backend to default to port 80 for cloud deployments
+> Because Cloud Run defaults to port 80, we need to change how the frontend accesses the backend, as while port 8000 is reachable for local deployments, it won't work for Cloud Run where the frontend service can contact the backend directly using the Cloud Run service URL which is port 80 by default. Can we make this adjustment?
+
+### Results
+Cursor made the necessary adjustments to the codebase, including added a shared `config.ts` file to pull up the API URL -- I still have to add the Cloud Run service URLs to make everything work in the Cloud once deployed, meaning I have to deploy the service the first time to get the service URLs, then redeploy with those service URLs in the app files.

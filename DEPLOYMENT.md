@@ -120,21 +120,24 @@ gcloud run services update pdftool-backend \
 #### Frontend Configuration
 The frontend requires no special environment variables for Cloud Run deployment. The container runtime automatically handles port assignment and routing.
 
-### Update Frontend API URL
+**Automatic Backend URL Detection**: The frontend automatically detects if it's running in Cloud Run and constructs the backend URL by replacing `pdftool-frontend` with `pdftool-backend` in the service URL.
 
-After deployment, you'll need to update the frontend to use the deployed backend URL:
+**Optional Custom Backend URL**: If you need to use a different backend URL, you can set the `VITE_BACKEND_URL` environment variable during the build process:
 
-1. Get the backend service URL:
-   ```bash
-   gcloud run services describe pdftool-backend --region us-central1 --format="value(status.url)"
-   ```
+```bash
+# Build with custom backend URL
+VITE_BACKEND_URL=https://your-backend-service-url.com npm run build
+```
 
-2. Update the frontend API base URL in the React components:
-   - Open `frontend/src/components/MergePDF.tsx`
-   - Open `frontend/src/components/DeletePages.tsx`
-   - Replace `http://localhost:8000` with your backend service URL
+### Backend URL Configuration
 
-3. Rebuild and redeploy the frontend
+The frontend automatically handles backend URL configuration:
+
+1. **Local Development**: Uses `http://localhost:8000`
+2. **Cloud Run**: Automatically constructs the backend URL from the service name
+3. **Custom URLs**: Can be overridden with `VITE_BACKEND_URL` environment variable
+
+No manual API URL updates are needed in the React components.
 
 ### Port Configuration Summary
 

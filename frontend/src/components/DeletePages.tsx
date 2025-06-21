@@ -1,12 +1,11 @@
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import axios from 'axios'
+import { API_BASE_URL } from '../config'
 
 interface FileWithPreview extends File {
   preview?: string
 }
-
-const API_BASE_URL = 'http://localhost:8000'
 
 export default function DeletePages() {
   const [file, setFile] = useState<FileWithPreview | null>(null)
