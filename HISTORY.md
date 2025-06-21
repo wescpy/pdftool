@@ -199,3 +199,21 @@ the 3 app components plus a testing guide and a runner that executes all tests. 
 _This required extensive cleanup of import statements, type declarations, and configuration files. The process was significantly slower due to the complexity of fixing multiple linter issues across different file types (Python, TypeScript, configuration files). However, the end result was a clean, production-ready test suite that follows best practices and is ready for integration into CI/CD pipelines._
 
 I then made the mistake of committing those changes without this `HISTORY.md` file. When I asked Cursor to additionally commit it, it analyzed and suggested changes to it which I had to mostly undo. It generated a summary of the test suite which wasn't in `TESTING.md`, so I moved those lines there and committed both these files for posterity.
+
+
+## NEXT PROMPT: doublecheck Docker deployment instructions
+
+I wasn't convinced the Docker instructions were correct because it mapped ports 80 (`80:80`) when Vite defaults to 5173:
+
+> Can you validate the instructions for running locally in Docker containers in the README files? I'm concerned about the port numbers, especially if Vite defaults to port 5173, and whether it's mapped properly to port 80.
+
+### Results
+Cursor checked everything and said it's all okay, and the Docker runs on port 80 because it's considered "production." The issue is that CORS is only allowing 5173 (local) or GCR URLs (cloud). I proceeded with this line of continued questioning:
+
+> Show me where in the code that determines whether it's running the app via local development vs. production in docker or in the cloud.
+
+Cursor then explained 5173 is for local while the `ENVIRONMENT` envvar is either set to `PRODUCTION` or unset, in which case GCR URLs are allowed. Didn't even mention Docker, so I had to remind it (of) my current concern:
+
+> I don't understand how the Docker frontend is able to start on port 80 and the Docker backend is able to accept requests without a CORS issue because the backend is only expecting localhost:5173 for local frontends and Cloud Run URLs for cloud deployment. Does that take into consideration Docker deployments?
+
+Then it finally realized there was a CORS issue with Docker deployments and proceeded to add ports 3000 (React) and 80 (Docker frontend), and created `127.0.0.1` aliases for `localhost` in the backend `main.py`. It also updated the affected `README` files (top-level and backend) to reflect this change.

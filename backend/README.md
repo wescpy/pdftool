@@ -133,6 +133,11 @@ The backend automatically configures CORS based on the environment:
 - Allows requests from `http://localhost:5173` (Vite's default port)
 - Clean, minimal configuration for development
 
+#### Docker Deployment
+- Allows requests from `http://localhost:80` (Docker frontend on port 80)
+- Also supports other common development ports (3000, 127.0.0.1 variants)
+- Enables testing production builds locally
+
 #### Cloud Run Deployment
 - Allows requests from any Cloud Run service URL (`https://*.run.app`, `https://*.a.run.app`)
 - Supports cross-service communication within Cloud Run
@@ -393,4 +398,4 @@ When contributing to the backend:
 
 ## License
 
-This backend service is part of the PDF Tool project. See the root directory for license information. 
+This backend service is part of the PDF Tool project. See the root directory for license information.

@@ -15,6 +15,11 @@ app = FastAPI(title="PDFtool API")
 # Allow local development and Cloud Run deployments
 allowed_origins = [
     "http://localhost:5173",  # Local development (Vite default)
+    "http://localhost:80",    # Docker frontend deployment
+    "http://localhost:3000",  # Common React dev server port
+    "http://127.0.0.1:5173",  # Alternative localhost format
+    "http://127.0.0.1:80",    # Alternative localhost format
+    "http://127.0.0.1:3000",  # Alternative localhost format
 ]
 
 # Add Cloud Run origins if running in production

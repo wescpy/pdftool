@@ -103,6 +103,14 @@ Then use the API endpoints directly:
 
 ## 🚀 Deployment
 
+### Deployment Scenarios
+
+| Scenario | Frontend | Backend | CORS Status | Use Case |
+|----------|----------|---------|-------------|----------|
+| **Local Development** | `localhost:5173` | `localhost:8000` | ✅ Allowed | Development and testing |
+| **Docker Local** | `localhost:80` | `localhost:8000` | ✅ Allowed | Testing production builds locally |
+| **Cloud Run** | `*.run.app` | `*.run.app` | ✅ Allowed | Production deployment |
+
 ### Local Development
 - Frontend: `npm run dev` (Vite's default port)
 - Backend: `python main.py` (port 8000)
@@ -113,10 +121,14 @@ Then use the API endpoints directly:
 docker build -t pdftool-backend ./backend
 docker run -p 8000:8000 pdftool-backend
 
-# Build and run frontend
+# Build and run frontend (production build)
 docker build -t pdftool-frontend ./frontend
 docker run -p 80:80 pdftool-frontend
 ```
+
+**Note**: The frontend Docker container serves the production build (nginx on port 80), not the development server. For local development, use `npm run dev` instead of Docker.
+
+**CORS Configuration**: The backend automatically allows requests from both local development (port 5173) and Docker deployments (port 80), as well as Cloud Run services.
 
 ### Google Cloud Run
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions. Cloud Run automatically handles port assignment and routing.
