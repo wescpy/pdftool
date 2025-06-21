@@ -29,7 +29,8 @@ For cloud deployments, the frontend automatically detects the environment and co
 
 1. **Automatic Detection**: The app detects if it's running on localhost vs. a cloud domain
 2. **Backend URL Construction**: In Cloud Run, it constructs the backend URL by replacing `pdftool-frontend` with `pdftool-backend` in the service URL
-3. **Environment Variable Override**: You can override the backend URL by setting the `VITE_BACKEND_URL` environment variable during the build
+3. **CORS Support**: Backend automatically allows requests from Cloud Run service URLs
+4. **Environment Variable Override**: You can override the backend URL by setting the `VITE_BACKEND_URL` environment variable during the build
 
 #### Setting Custom Backend URL (Optional)
 If you need to use a different backend URL, set the environment variable during build:
@@ -56,6 +57,7 @@ npm run build
 
 ### Local Development
 - The frontend automatically connects to `http://localhost:8000` for local development
+- Backend CORS is configured to accept requests from `http://localhost:5173`
 - No additional configuration needed
 
 ### Cloud Deployment
@@ -63,7 +65,8 @@ For cloud deployments, the frontend automatically detects the environment and co
 
 1. **Automatic Detection**: The app detects if it's running on localhost vs. a cloud domain
 2. **Backend URL Construction**: In Cloud Run, it constructs the backend URL by replacing `pdftool-frontend` with `pdftool-backend` in the service URL
-3. **Environment Variable Override**: You can override the backend URL by setting the `VITE_BACKEND_URL` environment variable during the build
+3. **CORS Support**: Backend automatically allows requests from Cloud Run service URLs
+4. **Environment Variable Override**: You can override the backend URL by setting the `VITE_BACKEND_URL` environment variable during the build
 
 #### Setting Custom Backend URL (Optional)
 If you need to use a different backend URL, set the environment variable during build:
@@ -75,6 +78,7 @@ VITE_BACKEND_URL=https://your-backend-service-url.com npm run build
 - If you see network errors, make sure the backend is running and accessible
 - For Cloud Run deployments, ensure both frontend and backend services are deployed
 - Check that the backend service name follows the pattern `pdftool-backend` (or set VITE_BACKEND_URL)
+- CORS errors are automatically handled for both local and cloud environments
 
 ## Troubleshooting
 - If styles are missing, ensure Tailwind CSS is installed and configured as in this repo

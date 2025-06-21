@@ -90,9 +90,10 @@ Then use the API endpoints directly:
 - **Framework:** FastAPI for high-performance API
 - **PDF Processing:** PyPDF2 for PDF manipulation
 - **Server:** Uvicorn ASGI server
-- **CORS:** Configured for frontend integration
+- **CORS:** Configured for local development and Cloud Run deployments
 - **Error Handling:** Comprehensive error responses
 - **File Handling:** Streaming responses for PDF downloads
+- **Environment Support:** Automatic CORS configuration for local vs. cloud environments
 
 ### CLI (Python)
 - **Interface:** Command-line with interactive menu

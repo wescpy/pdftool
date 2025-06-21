@@ -15,10 +15,11 @@ A FastAPI-based backend service for PDF manipulation operations including mergin
 - ✅ **Merge PDFs** - Combine multiple PDF files into a single document
 - ✅ **Delete Pages** - Remove specific pages or page ranges from PDFs
 - ✅ **Get Page Count** - Retrieve the number of pages in a PDF file
-- ✅ **CORS Support** - Configured for cross-origin requests from frontend
+- ✅ **CORS Support** - Configured for local development and Cloud Run deployments
 - ✅ **File Validation** - Ensures uploaded files are valid PDFs
 - ✅ **Error Handling** - Comprehensive error responses with meaningful messages
 - ✅ **Streaming Responses** - Efficient file delivery for large PDFs
+- ✅ **Environment-Based CORS** - Automatic configuration for local vs. cloud environments
 
 ## API Endpoints
 
@@ -126,19 +127,28 @@ The backend can be configured using environment variables:
 
 ### CORS Configuration
 
-The backend is configured to accept requests from common frontend development ports:
+The backend automatically configures CORS based on the environment:
 
-```python
-allow_origins=[
-    "http://localhost:5173",  # Vite default
-    "http://localhost:5174",  # Vite fallback
-    "http://localhost:5175",  # Vite fallback
-    "http://localhost:5176",  # Vite fallback
-    "http://localhost:5177",  # Vite fallback
-]
+#### Local Development
+- Allows requests from `http://localhost:5173` (Vite's default port)
+- Clean, minimal configuration for development
+
+#### Cloud Run Deployment
+- Allows requests from any Cloud Run service URL (`https://*.run.app`, `https://*.a.run.app`)
+- Supports cross-service communication within Cloud Run
+- Automatically enabled when `ENVIRONMENT=production` or not set
+
+#### Environment Variables
+You can control CORS behavior with environment variables:
+```bash
+# For production deployment
+ENVIRONMENT=production python main.py
+
+# For local development (default behavior)
+python main.py
 ```
 
-For production, update the CORS origins in `main.py` to include your frontend domain.
+For production, update the CORS origins in `main.py` if you need custom domain support.
 
 ## Development
 

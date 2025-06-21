@@ -117,10 +117,14 @@ gcloud run services update pdftool-backend \
   --set-env-vars "ENVIRONMENT=production"
 ```
 
+**CORS Configuration**: The backend automatically configures CORS for Cloud Run deployments. No manual CORS setup is required.
+
 #### Frontend Configuration
 The frontend requires no special environment variables for Cloud Run deployment. The container runtime automatically handles port assignment and routing.
 
 **Automatic Backend URL Detection**: The frontend automatically detects if it's running in Cloud Run and constructs the backend URL by replacing `pdftool-frontend` with `pdftool-backend` in the service URL.
+
+**CORS Support**: Backend automatically allows requests from Cloud Run service URLs, so no CORS configuration is needed.
 
 **Optional Custom Backend URL**: If you need to use a different backend URL, you can set the `VITE_BACKEND_URL` environment variable during the build process:
 
@@ -137,7 +141,15 @@ The frontend automatically handles backend URL configuration:
 2. **Cloud Run**: Automatically constructs the backend URL from the service name
 3. **Custom URLs**: Can be overridden with `VITE_BACKEND_URL` environment variable
 
-No manual API URL updates are needed in the React components.
+No manual API URL updates or CORS configuration are needed in the React components.
+
+### CORS Configuration
+
+The backend automatically handles CORS for both environments:
+
+- **Local Development**: Allows requests from `http://localhost:5173`
+- **Cloud Run**: Allows requests from any Cloud Run service URL
+- **No Manual Setup**: CORS is configured automatically based on environment
 
 ### Port Configuration Summary
 
@@ -183,10 +195,10 @@ Visit the Google Cloud Console:
 
 ### Common Issues
 
-1. **CORS Errors**: Ensure the backend CORS settings include your frontend URL
-2. **Build Failures**: Check the Cloud Build logs for specific error messages
-3. **Service Unavailable**: Verify the service is deployed and running
-4. **Memory Issues**: Increase memory allocation if needed
+1. **Build Failures**: Check the Cloud Build logs for specific error messages
+2. **Service Unavailable**: Verify the service is deployed and running
+3. **Memory Issues**: Increase memory allocation if needed
+4. **Backend Connection**: Ensure both frontend and backend services are deployed and accessible
 
 ### Useful Commands
 

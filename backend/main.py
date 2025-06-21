@@ -12,9 +12,22 @@ import re
 app = FastAPI(title="PDFtool API")
 
 # Configure CORS
+# Allow local development and Cloud Run deployments
+allowed_origins = [
+    "http://localhost:5173",  # Local development (Vite default)
+]
+
+# Add Cloud Run origins if running in production
+if os.environ.get("ENVIRONMENT") == "production" or not os.environ.get("ENVIRONMENT"):
+    # Allow any Cloud Run service URL (frontend will be on different subdomain)
+    allowed_origins.extend([
+        "https://*.run.app",  # Cloud Run services
+        "https://*.a.run.app",  # Cloud Run services (alternative format)
+    ])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176", "http://localhost:5177"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
