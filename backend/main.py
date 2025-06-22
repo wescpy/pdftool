@@ -20,6 +20,8 @@ allowed_origins = [
     "http://127.0.0.1:5173",  # Alternative localhost format
     "http://127.0.0.1:80",    # Alternative localhost format
     "http://127.0.0.1:3000",  # Alternative localhost format
+    "http://localhost",       # Localhost without port
+    "http://127.0.0.1",       # 127.0.0.1 without port
 ]
 
 # Add Cloud Run origins if running in production

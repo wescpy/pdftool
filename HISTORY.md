@@ -245,3 +245,22 @@ That led to what is apparently the root cause, and that is _the Dockerfile is us
 Then it ran into difficulties "caused" by me, not having Docker installed (and definitely not having its daemon running). After installing and re-running the commands, it ran into another issue: _`@testing-library/react@14.3.1` expects React 18, but we have React 19,_ so it had to update `Dockerfile` to use `--legacy-peer-deps`.
 
 Next stumbling block: the _`package.json_` and _`package-lock.json_` are out of sync_, meaning there are dependencies in `package.json` but not `package-lock.json`. Furthermore, the React 18 vs. 19 required something different: `npm install --legacy-peer-deps`. After that, the container built successfully.
+
+
+## NEXT PROMPT: error with Docker frontend
+Both Docker containers now build successfully, and both containers also start correctly, but when testing app functionality, while the frontend was able to send a merge request (successfully) to the backend, confirmed with a `POST /merge HTTP/1.1" 200 OK`), the server wasn't able to stream the resulting payload back to the client, which displayed, `No response from server. Please check if the backend is running` to the end-user.
+
+Running a nearly-identical call via `curl` resulted in the same 200 success but _did_ get a merged PDF file in return. Somehow, a disconnect between the frontend and backend is preventing the merged file from being successfully returned to the client, so I asked Cursor for help:
+
+> Upon testing the Docker deployment, both the frontend and backend containers were built successfully, and they both started up, and I was able to reach the frontend with a browser on localhost:80. However, sending a request to the backend fails, resulting this error: "No response from server. Please check if the backend is running".
+>
+> The backend is definitely running, and receiving the request because the backend serverlogs show a "200 POST /merge" call was successfully received, however it wasn't able to stream the results back to the client. To confirm this, I was able to successfully send a curl POST request to localhost:8000, see the same 200 result on the backend and did receive a merged.pdf payload. Investigate why it fails using the web client.
+
+### Results
+Cursor concluded it was a CORS issue, and rather than explicitly itemizing port 80, to provide an origin of just `http://localhost` (plus equivalent for `127.0.0.1`) and added a CORS validation/test endpoint to see what happens. The validation worked successfully, demonstrating the backend service can now return content to the frontend when no port number is provided in the origin.
+
+Before cleaning up the CORS test endpoint for commit, I asked Cursor to save a copy of the `backend/main.py` as `main_debug.py` to help me recall this type of CORS issue.
+
+> Before committing the code, save a copy of previous main.py that includes the CORS test endpoint under another filename that will be filtered out by .gitignore and not committed.
+
+It did so and also added some lines in `.gitignore` to filter out `*_debug.*` files. The test endpoint code is removed and changes committed.
