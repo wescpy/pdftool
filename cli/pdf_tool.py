@@ -101,31 +101,33 @@ class PDFTool:
                     page_numbers.add(int(part))
             
             print(f"Reading PDF: {input_file}")
+            
+            # Keep the file open while processing
             with open(input_file, 'rb') as file:
                 pdf = PdfReader(file)
                 total_pages = len(pdf.pages)
-            
-            print(f"Total pages in PDF: {total_pages}")
-            print(f"Pages to delete: {sorted(page_numbers)}")
-            
-            # Validate page numbers
-            invalid_pages = [p for p in page_numbers if p < 1 or p > total_pages]
-            if invalid_pages:
-                raise ValueError(f"Invalid page numbers: {invalid_pages}. Pages must be between 1 and {total_pages}")
-            
-            writer = PdfWriter()
-            
-            # Add all pages except those in page_numbers
-            pages_kept = 0
-            for i in range(total_pages):
-                if i + 1 not in page_numbers:  # +1 because pages are 1-indexed
-                    writer.add_page(pdf.pages[i])
-                    pages_kept += 1
-            
-            # Write modified PDF
-            print(f"Writing modified PDF to: {output_file}")
-            with open(output_file, 'wb') as output:
-                writer.write(output)
+                
+                print(f"Total pages in PDF: {total_pages}")
+                print(f"Pages to delete: {sorted(page_numbers)}")
+                
+                # Validate page numbers
+                invalid_pages = [p for p in page_numbers if p < 1 or p > total_pages]
+                if invalid_pages:
+                    raise ValueError(f"Invalid page numbers: {invalid_pages}. Pages must be between 1 and {total_pages}")
+                
+                writer = PdfWriter()
+                
+                # Add all pages except those in page_numbers
+                pages_kept = 0
+                for i in range(total_pages):
+                    if i + 1 not in page_numbers:  # +1 because pages are 1-indexed
+                        writer.add_page(pdf.pages[i])
+                        pages_kept += 1
+                
+                # Write modified PDF
+                print(f"Writing modified PDF to: {output_file}")
+                with open(output_file, 'wb') as output:
+                    writer.write(output)
             
             print(f"✅ Successfully deleted {len(page_numbers)} pages. Kept {pages_kept} pages.")
             print(f"Output saved to: {output_file}")

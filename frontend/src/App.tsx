@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import MergePDF from './components/MergePDF'
 import DeletePages from './components/DeletePages'
 

@@ -1,24 +1,24 @@
 # History of creating this code with Cursor
 
-## Original prompt: create web app
-Create a simple PDF editor named "PDFtool" as a modern web app built using Vue.js. The app should have two features that users can choose from: 1) merge multiple PDF files together into a single file, and 2) delete one or more pages from a single PDF file. These features are presented as a list for users to choose from and also prepares for new features to be added. The user interface (UI) should have modern fonts and good contrast for human viewing, and the overall UI should be pleasant and visually-appealing.
-
-For the merge feature, users have access to a file selector dialog to choose multiple PDF files from their filesystem. There is also has a text field for users to enter the filename for the merged PDF file.
-
-The delete feature has a file selector for users to select the file they wish to edit. Once a file is selected, the app shows users all pages in the file and allows users to select the pages they want to delete. This can be a single or multiple pages. For multiple pages, users will have checkboxes for each page in the document. They should have the ability to drag-and-drop a group of pages to auto-select and check.
-
-The backend should be a short Python Flask and FastAPI app that can use the pypdf library directly or call the pdfly command-line tool (CLI) to execute user requests. Evaluate both options and implement the one that would be easiest to maintain for a human software developer and requires the least amount of code.
-
-All source code for both frontend and backend should be separate and created in the directory ~/work/cursor/pdftool.
-
+## ORIGINAL PROMPT: create web app
+> Create a simple PDF editor named "PDFtool" as a modern web app built using Vue.js. The app should have two features that users can choose from: 1) merge multiple PDF files together into a single file, and 2) delete one or more pages from a single PDF file. These features are presented as a list for users to choose from and also prepares for new features to be added. The user interface (UI) should have modern fonts and good contrast for human viewing, and the overall UI should be pleasant and visually-appealing.
+>
+> For the merge feature, users have access to a file selector dialog to choose multiple PDF files from their filesystem. There is also a text field for users to enter the filename for the merged PDF file.
+>
+> The delete feature has a file selector for users to select the file they wish to edit. Once a file is selected, the app shows users all pages in the file and allows users to select the pages they want to delete. This can be a single or multiple pages. For multiple pages, users will have checkboxes for each page in the document. They should have the ability to drag-and-drop a group of pages to auto-select and check.
+>
+> The backend should be a short Python Flask and FastAPI app that can use the pypdf library directly or call the pdfly command-line tool (CLI) to execute user requests. Evaluate both options and implement the one that would be easiest to maintain for a human software developer and requires the least amount of code.
+>
+> All source code for both frontend and backend should be separate and created in the directory `~/work/cursor/pdftool`.
 
 ### Results
-The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders.
+The app had many flaws, such as the frontend and backend services failing to start for one reason or another. After many rounds of coaxing, debugging, and fixes, I finally got a working version you find in both the `frontend` and `backend` folders. There were two big issues overall:
+1. Cursor just could not generate a Vue app that worked, so I had to switch to React.
+1. There were some major Tailwind v3 vs. v4 compatibility issues as well as with the PostCSS plugin. Cursor tried very hard to use v4 but in the end had to revert back to v3.
 
 
 ## NEXT PROMPT: design to run on GCP (Cloud Run)
-Both the merge PDFs and delete pages features work! Now containerize the application so I can deploy both services to Google Cloud Run Functions.
-
+> Both the merge PDFs and delete pages features work! Now containerize the application so I can deploy both services to Google Cloud Run Functions.
 
 ### Results
 Cursor asked me whether it should create `Dockerfile`s & `.dockerignore` files for both the frontend and backend. I said yes, and also create a `cloudbuild.yaml` file too.
@@ -29,18 +29,16 @@ I have **not** tested whether it works, meaning I haven't deployed it to Cloud R
 
 
 ## NEXT PROMPT: create a CLI equivalent
-In a subfolder named "cli", convert this app to a single command-line Python script with the same features, prompting users to provide names of PDF files for merging or a single PDF filename to delete pages from.
-
+> In a subfolder named "cli", convert this app to a single command-line Python script with the same features, prompting users to provide names of PDF files for merging or a single PDF filename to delete pages from.
 
 ### Results
 I haven't tested the CLI either but wanted to check everything in for posterity first before any more file altering takes place.
 
 ## NEXT PROMPT: commit code to `git` and GitHub
-Run git init in the top-level folder and create a .gitignore that covers superfluous files in frontend, backend, and cli.
-
+> Run git init in the top-level folder and create a .gitignore that covers superfluous files in frontend, backend, and cli.
 
 ### Results
-It ran `git init` and autogenerated a nice `.gitignore`, then running a `git status` so I could see the results. Then it generated a top-level `README` with complete project info.
+It ran `git init`, autogenerated a nice `.gitignore`, then a `git status` so I could see the results. Finally, it generated a top-level `README` with complete project info.
 
 I followed with a request to "Run the git commands and commit to my GitHub account." While it did the commit locally, it noticed that the repo doesn't exist on GH yet and failed there, prompting me to install the `gh` command. Cursor then gave me a command of `gh repo create wescpy/pdftool --public --source=. --remote=origin --push` to create this very repo you're looking at. After a `gh auth login` command to get me auth'd, it was able to create the repo and push the code.
 
@@ -54,3 +52,215 @@ Update the top-level README to include images of the application running. The ap
 Uploading the images with that prompt didn't have any effect... it didn't seem to notice my uploads. I copied the files directly into the top-level folder then requested the `README` be updated and all 3 files (including the images) be committed to GitHub.
 
 I followed up by manually editing `HISTORY.md` with these last few steps, and this is what you're looking at now. Bigger steps to take next are to get this thing running on GCP Cloud Run and testing the CLI.
+
+Some of the files did have issues in the editor. I attempted to fix them which led to other problems and got stuck on Tailwind v3 vs. v4 incompatibilities. The solution was to roll back to v3 for now. Before getting to the next steps, I asked it to review all the `README` files because I didn't like the `frontend` one, which sounded like a generic template.
+
+
+## NEXT PROMPT: cleanup the `README`s
+> Scan all of the README files at the top-level, frontend, and backend to ensure they're descriptive of the respective content and improve them if possible.
+
+### Results
+After looking over the `README` files, it came up with:
+
+_Here’s an analysis and improvement plan for your README files:_
+
+- Add a summary and “Demo” section to the top-level README.
+- Replace the frontend README with a project-specific one.
+- Add a “Quick Start” to the backend README.
+
+I accepted the changes and had Cursor push the latest upstream.
+
+
+### Additional follow-up: CLI
+The next day I decided to try the CLI. While the merge feature worked out-of-the-box, the delete feature had a bug where it could not complete the request. As a seasoned Python developer, it didn't take long to find the issue. But would it be challenging for Cursor? Not really. My prompt was: 
+
+> There's a problem with the CLI. When running the CLI to delete pages from a PDF, I get this error: `❌ Error: Error deleting pages: seek of closed file`.
+
+As the error indicates, the code is trying to access the file after it has been closed, making you realize that a huge chunk of code should be inside the `with` block. Cursor came to the same conclusion (and made the fix):
+
+> I found the issue! The problem is in the `delete_pages` method. The file is being closed after reading the PDF, but then the code tries to access `pdf.pages[i]` later, which causes the "seek of closed file" error.
+
+
+## NEXT PROMPT: change cloud deployments to return merged or modified PDF via HTTP instead of saving locally
+(NOTE: I'm about to make a mistake here: when running locally where the updated PDFs are returned and saved to disk, I assumed it was the server doing the saving, not the browser.)
+
+> Taking a look at deploying the web app to Google Cloud Run, some functionality needs to be changed to make it work successfully. When running both servers locally, it's not an issue to save the merged or modified PDFs to the local filesystem, but in the cloud, this is not the desired behavior because users want the merged or modified file returned to them and not stored on Google servers. Alter both the frontend and backend so that if running locally, the files are saved locally as they are now, but if deployed to Cloud Run, for the resulting file to be returned to the user via the HTTP response.
+
+### Results
+Cursor responded positively and came up with a plan and even provided an outline:
+
+_This is a great and common requirement for cloud deployments! Here’s a concise plan and the changes you’ll need:_
+
+1. **Backend (FastAPI)**
+- **Current:** Saves merged/modified PDFs to disk, then returns or references them.
+- **Cloud Run Desired:** Return the PDF file directly in the HTTP response (as a download), and do not save to disk.
+**Local:** Continue saving to disk for convenience.
+**How to detect environment:**
+- Use an environment variable, e.g., `CLOUD_RUN` (set to `"true"` in Cloud Run).
+**Backend logic:**
+- If `CLOUD_RUN` is set, return the PDF as a streaming response.
+- If not, save to disk as before.
+
+2. **Frontend**
+- **Current:** Downloads the file from the backend response.
+- **Change needed:** None, if the backend returns the file as a download (with correct headers), the frontend can handle it as before.
+
+3. **CLI**
+- No change needed unless you want to support cloud mode for CLI as well.
+
+4. **Implementation Plan**
+**Backend (FastAPI)**
+- Add a check for `os.environ.get("CLOUD_RUN") == "true"`.
+- If in cloud mode, use `StreamingResponse` to return the PDF directly.
+- If not, save to disk as before.
+**Frontend**
+- No change needed if you already handle file downloads from the response.
+
+This plan seemed reasonable, so I gave the okay for implementation and committed the code. However, upon reflection looking at the changes, it appears that the app was already returning a `StreamingResponse`, and my request made Cursor deliberately _add explicit file-saving_ of the resulting PDF to the local filesystem needlessly.
+
+Because my browser immediately saved the file, I made the mistake of assuming _the app wrote the PDF to the local filesystem, not the browser_. I realized the error of my ways and asked Cursor to revert this change, in both the code as well as the cloud `DEPLOYMENT.md` file:
+
+> Actually upon reflection, the original was already streaming the response and not saving locally as there's no need for the local versions to explicitly save the resulting PDF. Please revert the change adding that feature, and also remove the need for the CLOUD_RUN environment variable so a StreamingResponse is sent back in all cases. Basically revert the code back to the previous version.
+
+_The backend code has been reverted to always return a `StreamingResponse` for merged and modified PDFs, regardless of environment. The logic for saving files locally and the `CLOUD_RUN` environment variable has been removed. The deployment documentation has also been updated to remove references to the environment variable._
+
+I had Cursor revert the update and commit the changes. The next step would be to deploy this app to GCP.
+
+## NEXT PROMPT: change cloud deployments to return merged or modified PDF via HTTP instead of saving locally
+Before doing the cloud deployment, I wanted to ensure the app can be accessed on the standard port 80, so I made this request:
+
+> I'd like to modify a few things for the frontend:
+> 1. Instead of hardcoding the server to run on the default Vite port 5173, configure the app so that it starts on 5173 for local deployments but on port 80 for Google Cloud Run deployments. Make necessary updates to the frontend README and top-level DEPLOYMENT.md
+> 2. In index.html, change the default Vite page title to "PDFtool: a basic PDF manipulation app"
+> 3. Delete the public/vite.svg file using "git rm" instead of just deleting locally, and also remove the corresponding line in index.html. I'll add a favicon.ico file which React will use as a default instead. 
+
+### Results
+Cursor generally complied but felt it needed to import Node.js types when it got a linter error trying to access `process.env.PORT`. I thought it could be handled by adding `import process from 'node:process'`, but I guess not because it has to be done using "Vite's built-in port detection"(?). I'm new to Vite & React vs. pure Node CLIs, so what do I know?
+
+I let Cursor run `npm install --save-dev @types/node --prefix frontend`, and no import of `process` was required in the code after that. (We'll see.) After _this_ change, the frontend service starts locally on Vite's default port 5173, and cloud deployments will set `PORT=80` and access the Cloud Run frontend service URL directly. I did not try the app to ensure these changes worked because there was something else on the backend that needed to be updated first.
+
+
+## NEXT PROMPT: change backend to default to port 80 for cloud deployments
+Services deployed to Cloud Run will take them on port 80 even though it'll redirect to the correct port into the container (8080), so I asked Cursor to adjust the port# support:
+
+> Because Cloud Run defaults to port 80, we need to change how the frontend accesses the backend, as while port 8000 is reachable for local deployments, it won't work for Cloud Run where the frontend service can contact the backend directly using the Cloud Run service URL which is port 80 by default. Can we make this adjustment?
+
+### Results
+Cursor made the necessary adjustments to the codebase, including added a shared `config.ts` file to pull up the API URL -- I still have to add the Cloud Run service URLs to make everything work in the Cloud once deployed, meaning I have to deploy the service the first time to get the service URLs, then redeploy with those service URLs in the app files.
+
+
+## NEXT PROMPT: ensure correct CORS support for cloud deployments
+I was taking a look at the backend `main.py` and saw a bunch of extra allowed origins from fallback ports (5174-5177) and then noticed there was no support for Cloud Run origins here, so I asked Cursor for it:
+
+> Can you doublecheck the the backend main.py for ensure correct CORS support for running both locally as well as on Cloud Run? It appears that CORS will work for running locally with frontend requests coming from localhost:5173, but ensure it will also work with requests coming from the frontend service on Cloud Run.
+>
+> After that's done, remove the allowed origins in the same file for local requests coming from ports 5174-5178 as it's not necessary if the frontend is only going to send traffic from localhost port 5173.
+
+### Results
+Cursor left 5173 as an allowed origin, removed the extras (5174-5177), and added Cloud Run origins for cloud deployments. I won't add it here but also asked Cursor to make any adjustments to the `README` files as well as `DEPLOYMENT.md` to reflect the changes.
+
+
+## NEXT PROMPT: create a tag and a pre-release
+I now have a stable working web app that can be deployed locally as well as a working CLI. This calls for a release:
+> This is a basic working version for local deployments as well as the CLI, so I'd like to tag it as v0.1.0. What are the commands I need to issue to git to make this happen, so that it'll be reflected in GitHub? Let's also make a release using this tag? And how do I mark this tag and release as pre-production?
+
+### Results
+Tag v0.1.0 was created (click on "🏷️1 tags" in GitHub to see it), and a pre-production release was also created. Since it's _only_ a pre-release, you have to click on "[Releases](/releases)" to see it.
+
+
+## NEXT PROMPT: change licenses
+The rest of the code in my repo uses the Apache 2.0 license, but Cursor defaulted to MIT, so I asked Cursor to switch:
+> I'd like to change this repo to having the Apache 2.0 license instead of the MIT license. Can you also create a LICENSE file to reflect this update? Add hyperlinks (and not just that text) for the LICENSE file to the README files that reference LICENSE. Also create a CONTRIBUTING.md that adheres to the Contributor Covenant Code of Conduct referenced at contributor-covenant.org and create a corresponding CODE_OF_CONDUCT.md file.
+
+(I cheated a little... the "one" prompt you see above was actually split into two, but I took no additional actions, and the results are the same as if I gave the single prompt.)
+
+### Results
+1. Cursor changed the license, created a LICENSE file, and updated all the `README` files to point to it.
+1. It also created `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md` files as I requested.
+
+
+## NEXT PROMPT: add unit tests
+> Please develop a suite of unit tests for the frontend, backend, and CLI in each folder in an approrpiately-named subfolder specifically for tests. Create the test suites in preparation for a future CI/CD pipeline for cloud deployment.
+
+### Results
+Of the three (front, backend, CLI) software components, Cursor starts with the backend, followed by the CLI, 
+and finally does the frontend last. After the code, it creates the test configuration and 3rd-party package 
+files, and after that, the test runner scripts and a `TESTING.md` testing guide.
+
+One issue that cropped up during the creation of all the test code is that there were a ton of linter errors, requiring me to give it cleanup instructions:
+
+> Before I accept each new or modified file, can you fix any issues in the files, including linter errors or warnings?
+
+This is where the LLM used for the free version slows down significantly. I can see it taking about 2-3 
+seconds per line of code rather than 2-3 lines of code generated per second. I actually walked AfK for a few 
+minutes to grab some food while it was working. After it completed, I now had an entire battery of tests for 
+the 3 app components plus a testing guide and a runner that executes all tests. I asked Cursor why?
+
+_This required extensive cleanup of import statements, type declarations, and configuration files. The process was significantly slower due to the complexity of fixing multiple linter issues across different file types (Python, TypeScript, configuration files). However, the end result was a clean, production-ready test suite that follows best practices and is ready for integration into CI/CD pipelines._
+
+I then made the mistake of committing those changes without this `HISTORY.md` file. When I asked Cursor to additionally commit it, it analyzed and suggested changes to it which I had to mostly undo. It generated a summary of the test suite which wasn't in `TESTING.md`, so I moved those lines there and committed both these files for posterity.
+
+
+## NEXT PROMPT: doublecheck Docker deployment instructions
+
+I wasn't convinced the Docker instructions were correct because it mapped ports 80 (`80:80`) when Vite defaults to 5173:
+
+> Can you validate the instructions for running locally in Docker containers in the README files? I'm concerned about the port numbers, especially if Vite defaults to port 5173, and whether it's mapped properly to port 80.
+
+### Results
+Cursor checked everything and said it's all okay, and the Docker runs on port 80 because it's considered "production." The issue is that CORS is only allowing 5173 (local) or GCR URLs (cloud). I proceeded with this line of continued questioning:
+
+> Show me where in the code that determines whether it's running the app via local development vs. production in docker or in the cloud.
+
+Cursor then explained 5173 is for local while the `ENVIRONMENT` envvar is either set to `PRODUCTION` or unset, in which case GCR URLs are allowed. Didn't even mention Docker, so I had to remind it (of) my current concern:
+
+> I don't understand how the Docker frontend is able to start on port 80 and the Docker backend is able to accept requests without a CORS issue because the backend is only expecting localhost:5173 for local frontends and Cloud Run URLs for cloud deployment. Does that take into consideration Docker deployments?
+
+Then it finally realized there was a CORS issue with Docker deployments and proceeded to add ports 3000 (React) and 80 (Docker frontend), and created `127.0.0.1` aliases for `localhost` in the backend `main.py`. It also updated the affected `README` files (top-level and backend) to reflect this change.
+
+
+## NEXT PROMPT: error with Docker frontend
+While the Docker backend container built and started correctly, that wasn't the case with the frontend, which errored out, so I asked Cursor to fix:
+
+> Starting the backend locally using Docker works, but the frontend gives me the following error... please diagnose:
+```
+. . .
+ > [build 4/6] RUN npm ci --only=production:
+0.725 npm error code EUSAGE
+0.725 npm error
+0.725 npm error The `npm ci` command can only install with an existing package-lock.json or
+0.725 npm error npm-shrinkwrap.json with lockfileVersion >= 1. Run an install with npm@5 or
+0.725 npm error later to generate a package-lock.json file, then try again.
+0.725 npm error
+. . .
+ERROR: failed to solve: process "/bin/sh -c npm ci --only=production" did not complete successfully: exit code: 1
+. . .
+```
+
+### Results
+First, Cursor claimed _there's no package-lock.json file in the frontend directory, and npm ci requires it._ But it still fails after running `npm install`. It's "thinking" perhaps `package-lock.json` was being filtered out in `.dockerignore`. Nope, that wasn't the case either. It finally concluded _the .dockerignore file is excluding dist/ and build/ directories, but more importantly, it's not excluding `package-lock.json`._
+
+That led to what is apparently the root cause, and that is _the Dockerfile is using npm ci --only=production, but for a build process, we need the dev dependencies as well (like Vite, TypeScript, etc.). The --only=production flag excludes dev dependencies that are needed for the build step._
+
+Then it ran into difficulties "caused" by me, not having Docker installed (and definitely not having its daemon running). After installing and re-running the commands, it ran into another issue: _`@testing-library/react@14.3.1` expects React 18, but we have React 19,_ so it had to update `Dockerfile` to use `--legacy-peer-deps`.
+
+Next stumbling block: the _`package.json_` and _`package-lock.json_` are out of sync_, meaning there are dependencies in `package.json` but not `package-lock.json`. Furthermore, the React 18 vs. 19 required something different: `npm install --legacy-peer-deps`. After that, the container built successfully.
+
+
+## NEXT PROMPT: error with Docker frontend
+Both Docker containers now build successfully, and both containers also start correctly, but when testing app functionality, while the frontend was able to send a merge request (successfully) to the backend, confirmed with a `POST /merge HTTP/1.1" 200 OK`), the server wasn't able to stream the resulting payload back to the client, which displayed, `No response from server. Please check if the backend is running` to the end-user.
+
+Running a nearly-identical call via `curl` resulted in the same 200 success but _did_ get a merged PDF file in return. Somehow, a disconnect between the frontend and backend is preventing the merged file from being successfully returned to the client, so I asked Cursor for help:
+
+> Upon testing the Docker deployment, both the frontend and backend containers were built successfully, and they both started up, and I was able to reach the frontend with a browser on localhost:80. However, sending a request to the backend fails, resulting this error: "No response from server. Please check if the backend is running".
+>
+> The backend is definitely running, and receiving the request because the backend serverlogs show a "200 POST /merge" call was successfully received, however it wasn't able to stream the results back to the client. To confirm this, I was able to successfully send a curl POST request to localhost:8000, see the same 200 result on the backend and did receive a merged.pdf payload. Investigate why it fails using the web client.
+
+### Results
+Cursor concluded it was a CORS issue, and rather than explicitly itemizing port 80, to provide an origin of just `http://localhost` (plus equivalent for `127.0.0.1`) and added a CORS validation/test endpoint to see what happens. The validation worked successfully, demonstrating the backend service can now return content to the frontend when no port number is provided in the origin.
+
+Before cleaning up the CORS test endpoint for commit, I asked Cursor to save a copy of the `backend/main.py` as `main_debug.py` to help me recall this type of CORS issue.
+
+> Before committing the code, save a copy of previous main.py that includes the CORS test endpoint under another filename that will be filtered out by .gitignore and not committed.
+
+It did so and also added some lines in `.gitignore` to filter out `*_debug.*` files. The test endpoint code is removed and changes committed.

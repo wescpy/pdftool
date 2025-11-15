@@ -414,6 +414,10 @@ temp/
 tmp/
 *.tmp
 
+# Debug files
+*_debug.*
+debug/
+
 # PDF files (test files)
 *.pdf
 

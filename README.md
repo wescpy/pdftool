@@ -1,5 +1,9 @@
 # PDF Tool
 
+PDF Tool is an all-in-one application for manipulating PDF files. It provides a modern web interface, a REST API, and a command-line tool for merging, splitting, and managing PDF documents with ease.
+
+## Demo
+
 ![PDF Tool Startup](app-startup.png)
 *App startup: what you see when you first open the app*
 
@@ -48,7 +52,7 @@ pdftool/
    ```
 
 3. **Open your browser:**
-   - Frontend: http://localhost:5173
+   - Frontend: http://localhost:5173 (Vite's default port)
    - Backend API: http://localhost:8000
 
 ### Option 2: Command Line Interface
@@ -80,13 +84,16 @@ Then use the API endpoints directly:
 - **Styling:** Tailwind CSS for modern UI
 - **File Upload:** react-dropzone for drag-and-drop
 - **HTTP Client:** Axios for API communication
+- **Port Configuration:** Vite's default port (5173) for local development, Cloud Run handles port assignment automatically
 
 ### Backend (FastAPI + Python)
 - **Framework:** FastAPI for high-performance API
 - **PDF Processing:** PyPDF2 for PDF manipulation
 - **Server:** Uvicorn ASGI server
-- **CORS:** Configured for frontend integration
+- **CORS:** Configured for local development and Cloud Run deployments
 - **Error Handling:** Comprehensive error responses
+- **File Handling:** Streaming responses for PDF downloads
+- **Environment Support:** Automatic CORS configuration for local vs. cloud environments
 
 ### CLI (Python)
 - **Interface:** Command-line with interactive menu
@@ -96,8 +103,16 @@ Then use the API endpoints directly:
 
 ## 🚀 Deployment
 
+### Deployment Scenarios
+
+| Scenario | Frontend | Backend | CORS Status | Use Case |
+|----------|----------|---------|-------------|----------|
+| **Local Development** | `localhost:5173` | `localhost:8000` | ✅ Allowed | Development and testing |
+| **Docker Local** | `localhost:80` | `localhost:8000` | ✅ Allowed | Testing production builds locally |
+| **Cloud Run** | `*.run.app` | `*.run.app` | ✅ Allowed | Production deployment |
+
 ### Local Development
-- Frontend: `npm run dev` (port 5173)
+- Frontend: `npm run dev` (Vite's default port)
 - Backend: `python main.py` (port 8000)
 
 ### Docker Deployment
@@ -106,13 +121,21 @@ Then use the API endpoints directly:
 docker build -t pdftool-backend ./backend
 docker run -p 8000:8000 pdftool-backend
 
-# Build and run frontend
-docker build -t pdftool-frontend ./frontend
+# Build and run frontend (production build)
+cd frontend
+npm install --legacy-peer-deps  # Resolve React version conflicts
+docker build -t pdftool-frontend .
 docker run -p 80:80 pdftool-frontend
 ```
 
+**Note**: The frontend Docker container serves the production build (nginx on port 80), not the development server. For local development, use `npm run dev` instead of Docker.
+
+**Dependency Resolution**: The frontend build uses `--legacy-peer-deps` to resolve React 19 compatibility with testing libraries.
+
+**CORS Configuration**: The backend automatically allows requests from both local development (port 5173) and Docker deployments (port 80), as well as Cloud Run services.
+
 ### Google Cloud Run
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed cloud deployment instructions. Cloud Run automatically handles port assignment and routing.
 
 ## 📚 Documentation
 
@@ -149,17 +172,34 @@ pip install -r requirements.txt
 
 ### Running Tests
 ```bash
-# Backend tests (when implemented)
-cd backend
-python -m pytest
+# Run all tests across the project
+python run_all_tests.py
 
-# Frontend tests (when implemented)
+# Backend tests
+cd backend
+pip install -r requirements-test.txt
+python -m pytest tests/ -v
+
+# Frontend tests
 cd frontend
-npm test
+npm install
+npm run test:run
+
+# CLI tests
+cd cli
+pip install -r requirements-test.txt
+python -m pytest tests/ -v
 ```
+
+For detailed testing information, see [TESTING.md](TESTING.md).
 
 ## 🤝 Contributing
 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and contribute to the project.
+
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+
+### Quick Start
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
@@ -175,7 +215,7 @@ npm test
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 🐛 Troubleshooting
 
@@ -192,17 +232,24 @@ This project is licensed under the MIT License - see the LICENSE file for detail
    ```bash
    cd frontend
    rm -rf node_modules package-lock.json
-   npm install
+   npm install --legacy-peer-deps  # Resolve React version conflicts
    ```
 
-3. **Backend dependency issues:**
+3. **Docker build failures:**
+   ```bash
+   cd frontend
+   npm install --legacy-peer-deps  # Update dependencies first
+   docker build -t pdftool-frontend .
+   ```
+
+4. **Backend dependency issues:**
    ```bash
    cd backend
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-4. **PDF processing errors:**
+5. **PDF processing errors:**
    - Ensure files are valid PDFs
    - Check file permissions
    - Verify file size limits
@@ -228,4 +275,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **PyPDF2** for PDF manipulation capabilities
 - **FastAPI** for the excellent web framework
 - **React** and **Vite** for the modern frontend experience
-- **Tailwind CSS** for the beautiful UI components 
+- **Tailwind CSS** for the beautiful UI components
+
+## 🆘 Support
+
+For questions, issues, or feature requests, please open an issue on the [GitHub repository](https://github.com/wescpy/pdftool/issues) or contact the maintainer. 
